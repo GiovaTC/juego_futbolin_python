@@ -60,4 +60,8 @@ class Player:
         else:
             self.vx *= 0.85
             self.vy *= 0.85
-                
+
+        self.x += self.vx
+        self.y += self.vy
+
+            
