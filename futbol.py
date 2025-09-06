@@ -85,11 +85,13 @@ class Player:
         # Borde
         pygame.draw.circle(surf, BLACK, (int(self.x), int(self.y)), PLAYER_RADIUS, 2)
 class Ball:
+    
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.vx = 0.0
         self.vy = 0.0
+    
     def Update(self):
         #   aplicar velocidad
         self.x += self.vx
@@ -107,3 +109,8 @@ class Ball:
         # limitar dentro x (para evitar perderla fuera del canvas)
         self.x = clamp(self.x,  -100,   WIDTH  +   100)
     
+    def draw(self, surf):
+        pygame.draw.circle(surf,    WHITE,  (int(self.x),   int(self.y)),   BALL_RADIUS)
+        pygame.draw.circle(surf,    BLACK,  (int(self.x),   int(self.y)),   BALL_RADIUS, 2)
+
+
