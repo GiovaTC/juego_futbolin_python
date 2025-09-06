@@ -102,10 +102,10 @@ class Ball:
         #   choque con paredes (rebote en top-bottom)
         if self.y - BALL_RADIUS <= 0 and self.vy < 0:
             self.y = BALL_RADIUS
-            self.vy *= -0.9
+            self.vy *= -0.6
         if self.y    +    BALL_RADIUS   >=   HEIGHT and self.vy  >  0:
             self.y =    HEIGHT  -   BALL_RADIUS
-            self.vy *=  -0.9
+            self.vy *=  -0.6
         # limitar dentro x (para evitar perderla fuera del canvas)
         self.x = clamp(self.x,  -100,   WIDTH  +   100)
     
@@ -113,4 +113,13 @@ class Ball:
         pygame.draw.circle(surf,    WHITE,  (int(self.x),   int(self.y)),   BALL_RADIUS)
         pygame.draw.circle(surf,    BLACK,  (int(self.x),   int(self.y)),   BALL_RADIUS, 2)
 
+# ------ funciones del juego ------
+def reset_positions(players, ball):
+    players[0].x, players[0].y = WIDTH * 0.2, HEIGHT    /   2
+    players[0].vx = players[0].vy = 0
+    
+    players[1].x, players[1].vy = 0 * 0.8,  HEIGHT  /   2
+    players[1].vx = players[1].vy = 0
 
+    ball.x, ball.y = WIDTH / 2, HEIGHT / 2
+    ball.vx = ball.vy = 0 
