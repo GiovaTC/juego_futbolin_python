@@ -1,4 +1,4 @@
-import pygame
+import pygame 
 import math
 import random
 
@@ -82,72 +82,118 @@ class Player:
 
     def draw(self, surf):
         pygame.draw.circle(surf, self.color, (int(self.x), int(self.y)), PLAYER_RADIUS)
-        # Borde
         pygame.draw.circle(surf, BLACK, (int(self.x), int(self.y)), PLAYER_RADIUS, 2)
+
 class Ball:
-    
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.vx = 0.0
         self.vy = 0.0
     
-    def Update(self):
-        #   aplicar velocidad
+    def update(self):
         self.x += self.vx
         self.y += self.vy
-        #   fricción
         self.vx *= FRICTION
         self.vy *= FRICTION
-        #   choque con paredes (rebote en top-bottom)
+
         if self.y - BALL_RADIUS <= 0 and self.vy < 0:
             self.y = BALL_RADIUS
             self.vy *= -0.6
-        if self.y    +    BALL_RADIUS   >=   HEIGHT and self.vy  >  0:
-            self.y =    HEIGHT  -   BALL_RADIUS
-            self.vy *=  -0.6
-        # limitar dentro x (para evitar perderla fuera del canvas)
-        self.x = clamp(self.x,  -100,   WIDTH  +   100)
+        if self.y + BALL_RADIUS >= HEIGHT and self.vy > 0:
+            self.y = HEIGHT - BALL_RADIUS
+            self.vy *= -0.6
+
+        self.x = clamp(self.x, -100, WIDTH + 100)
     
     def draw(self, surf):
-        pygame.draw.circle(surf,    WHITE,  (int(self.x),   int(self.y)),   BALL_RADIUS)
-        pygame.draw.circle(surf,    BLACK,  (int(self.x),   int(self.y)),   BALL_RADIUS, 2)
+        pygame.draw.circle(surf, WHITE, (int(self.x), int(self.y)), BALL_RADIUS)
+        pygame.draw.circle(surf, BLACK, (int(self.x), int(self.y)), BALL_RADIUS, 2)
 
 # ------ funciones del juego ------
 def reset_positions(players, ball):
-    players[0].x, players[0].y = WIDTH * 0.2, HEIGHT    /   2
+    players[0].x, players[0].y = WIDTH * 0.2, HEIGHT / 2
     players[0].vx = players[0].vy = 0
     
-    players[1].x, players[1].vy = 0 * 0.8,  HEIGHT  /   2
+    players[1].x, players[1].y = WIDTH * 0.8, HEIGHT / 2
     players[1].vx = players[1].vy = 0
 
     ball.x, ball.y = WIDTH / 2, HEIGHT / 2
     ball.vx = ball.vy = 0 
 
-def check_player_ball_collision(player, ball,   kick_pressed=False):
-    dist    =  distance((player.x,  player.y), (ball.x, ball.y))
+def check_player_ball_collision(player, ball, kick_pressed=False):
+    dist = distance((player.x, player.y), (ball.x, ball.y))
     if dist <= PLAYER_RADIUS + BALL_RADIUS:
-        # empujar la pelota en direccion del jugador
-        dx  =   ball.x  -   player.x
-        dy  =   ball.y  -   player.y
-        # 1
-        if  dx  ==  0   and dy  ==  0:
-            dx  =   random.uniform(-0.5,    0.5)
-            dy  =   random.uniform(-0.5,    0.5)
-        length  =   math.hypot(dx,  dy)
-        nx, ny  = dx    /   length, dy  /   length
-        # si el jugador esta chutiando y    cerca, aplicar > fuerza .
-        power   =   KICK_POWER if   kick_pressed    else    1.6
-        ball.vx =   nx  *   power   +   player.vx   *   0.6
-        ball.vy =   ny  *   power   +   player.vy   *   0.6
-        # separa    para    evitar    quedar    pegados
-        overlap =   (PLAYER_RADIUS  +   BALL_RADIUS)    -   dist    +   1
-        ball.x =    nx  *   overlap
-        ball.y =    ny  *   overlap
+        dx = ball.x - player.x
+        dy = ball.y - player.y
+        if dx == 0 and dy == 0:
+            dx = random.uniform(-0.5, 0.5)
+            dy = random.uniform(-0.5, 0.5)
+        length = math.hypot(dx, dy)
+        nx, ny = dx / length, dy / length
+        power = KICK_POWER if kick_pressed else 1.6
+        ball.vx = nx * power + player.vx * 0.6
+        ball.vy = ny * power + player.vy * 0.6
+        overlap = (PLAYER_RADIUS + BALL_RADIUS) - dist + 1
+        ball.x += nx * overlap
+        ball.y += ny * overlap
 
 def draw_field(surf):
-    surf.fill(  DARK_GREEN  )
-    pygame.draw.rect(   surf,   GREEN,  (40,    40,     WIDTH   -   80,     HEIGHT  -   80))
-    #   lineas del campo
-    pygame.draw.rect(   surf,   WHITE,  (40,    40,     WIDTH   -   80,     HEIGHT  -   80), 4)
-    #   linea central      
+    surf.fill(DARK_GREEN)
+    pygame.draw.rect(surf, GREEN, (40, 40, WIDTH - 80, HEIGHT - 80))
+    pygame.draw.rect(surf, WHITE, (40, 40, WIDTH - 80, HEIGHT - 80), 4)
+    pygame.draw.line(surf, WHITE, (WIDTH // 2, 40), (WIDTH // 2, HEIGHT - 40), 4)
+
+    # porterías
+    pygame.draw.rect(surf, WHITE, (0, HEIGHT//2 - GOAL_WIDTH//2, 40, GOAL_WIDTH), 4)
+    pygame.draw.rect(surf, WHITE, (WIDTH-40, HEIGHT//2 - GOAL_WIDTH//2, 40, GOAL_WIDTH), 4)
+
+# ------ Loop principal ------
+def main():
+    players = [
+        Player(WIDTH*0.2, HEIGHT/2, BLUE, pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d, pygame.K_f),
+        Player(WIDTH*0.8, HEIGHT/2, RED, pygame.K_UP, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT, pygame.K_RCTRL)
+    ]
+    ball = Ball(WIDTH/2, HEIGHT/2)
+    reset_positions(players, ball)
+
+    running = True
+    while running:
+        clock.tick(FPS)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        keys_pressed = pygame.key.get_pressed()
+        for p in players:
+            p.handle_input(keys_pressed)
+
+        ball.update()
+
+        for p in players:
+            kick_pressed = keys_pressed[p.keys["kick"]]
+            check_player_ball_collision(p, ball, kick_pressed)
+
+        # chequear gol
+        if ball.x - BALL_RADIUS <= 40 and (HEIGHT//2 - GOAL_WIDTH//2 <= ball.y <= HEIGHT//2 + GOAL_WIDTH//2):
+            players[1].score += 1
+            reset_positions(players, ball)
+        if ball.x + BALL_RADIUS >= WIDTH-40 and (HEIGHT//2 - GOAL_WIDTH//2 <= ball.y <= HEIGHT//2 + GOAL_WIDTH//2):
+            players[0].score += 1
+            reset_positions(players, ball)
+
+        # dibujar
+        draw_field(screen)
+        ball.draw(screen)
+        for p in players:
+            p.draw(screen)
+
+        score_text = font.render(f"{players[0].score} - {players[1].score}", True, YELLOW)
+        screen.blit(score_text, (WIDTH//2 - score_text.get_width()//2, 10))
+
+        pygame.display.flip()
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
