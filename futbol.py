@@ -82,3 +82,28 @@ class Player:
 
     def draw(self, surf):
         pygame.draw.circle(surf, self.color, (int(self.x), int(self.y)), PLAYER_RADIUS)
+        # Borde
+        pygame.draw.circle(surf, BLACK, (int(self.x), int(self.y)), PLAYER_RADIUS, 2)
+class Ball:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.vx = 0.0
+        self.vy = 0.0
+    def Update(self):
+        #   aplicar velocidad
+        self.x += self.vx
+        self.y += self.vy
+        #   fricción
+        self.vx *= FRICTION
+        self.vy *= FRICTION
+        #   choque con paredes (rebote en top-bottom)
+        if self.y - BALL_RADIUS <= 0 and self.vy < 0:
+            self.y = BALL_RADIUS
+            self.vy *= -0.9
+        if self.y    +    BALL_RADIUS   >=   HEIGHT and self.vy  >  0:
+            self.y =    HEIGHT  -   BALL_RADIUS
+            self.vy *=  -0.9
+        # limitar dentro x (para evitar perderla fuera del canvas)
+        self.x = clamp(self.x,  -100,   WIDTH  +   100)
+    
