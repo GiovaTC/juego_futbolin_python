@@ -140,4 +140,14 @@ def check_player_ball_collision(player, ball,   kick_pressed=False):
         power   =   KICK_POWER if   kick_pressed    else    1.6
         ball.vx =   nx  *   power   +   player.vx   *   0.6
         ball.vy =   ny  *   power   +   player.vy   *   0.6
-             
+        # separa    para    evitar    quedar    pegados
+        overlap =   (PLAYER_RADIUS  +   BALL_RADIUS)    -   dist    +   1
+        ball.x =    nx  *   overlap
+        ball.y =    ny  *   overlap
+
+def draw_field(surf):
+    surf.fill(  DARK_GREEN  )
+    pygame.draw.rect(   surf,   GREEN,  (40,    40,     WIDTH   -   80,     HEIGHT  -   80))
+    #   lineas del campo
+    pygame.draw.rect(   surf,   WHITE,  (40,    40,     WIDTH   -   80,     HEIGHT  -   80), 4)
+    #   linea central      
