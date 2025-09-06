@@ -3,6 +3,17 @@ import math
 import random
 
 # ---- Config ----
+WIDTH, HEIGHT = 900, 600
+FPS = 60
+PLAYER_RADIUS = 18
+BALL_RADIUS = 10
+PLAYER_SPEED = 4.0
+KICK_POWER = 8.5
+FRICTION = 0.99
+GOAL_WIDTH = 140
+SCORE_TO_WIN = 5
+
+# ---- Colores ----
 WHITE = (245, 245, 245)
 GREEN = (50, 155, 50)
 DARK_GREEN = (32, 120, 32)
@@ -64,4 +75,10 @@ class Player:
         self.x += self.vx
         self.y += self.vy
 
-            
+        # mantener en el campo de juego
+        margin = PLAYER_RADIUS + 4
+        self.x = clamp(self.x, margin, WIDTH - margin)
+        self.y = clamp(self.y, margin, HEIGHT - margin)
+
+    def draw(self, surf):
+        pygame.draw.circle(surf, self.color, (int(self.x), int(self.y)), PLAYER_RADIUS)
