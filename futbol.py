@@ -52,3 +52,12 @@ class Player:
             dx -= 1
         if keys_pressed[self.keys["right"]]:
             dx += 1
+        
+        if dx != 0 or dy != 0:
+            length = math.hypot(dx, dy)
+            self.vx = (dx / length) *  PLAYER_SPEED
+            self.vy = (dy / length) *  PLAYER_SPEED
+        else:
+            self.vx *= 0.85
+            self.vy *= 0.85
+                
