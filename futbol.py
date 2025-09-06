@@ -27,3 +27,28 @@ def distance(a, b):
     return math.hypot(a[0] - b[0], a[1] - b[1])
 
 # ---- Clases ----
+class Player:
+    def __init__(self, x, y, color, up_key, left_key, down_key, right_key, kick_key):
+        self.x = x
+        self.y = y
+        self.color =color
+        self.vx = 0
+        self.vy = 0
+        self.score = 0
+        self.keys = {
+            "up": up_key,
+            "left": left_key,
+            "down": down_key,
+            "right": right_key,
+            "kick": kick_key
+        }
+    def handle_input(self, keys_pressed):
+        dx = dy = 0
+        if keys_pressed[self.keys["up"]]:  
+            dy -= 1
+        if keys_pressed[self.keys["down"]]:
+            dy += 1
+        if keys_pressed[self.keys["left"]]:
+            dx -= 1
+        if keys_pressed[self.keys["right"]]:
+            dx += 1
