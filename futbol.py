@@ -123,3 +123,21 @@ def reset_positions(players, ball):
 
     ball.x, ball.y = WIDTH / 2, HEIGHT / 2
     ball.vx = ball.vy = 0 
+
+def check_player_ball_collision(player, ball,   kick_pressed=False):
+    dist    =  distance((player.x,  player.y), (ball.x, ball.y))
+    if dist <= PLAYER_RADIUS + BALL_RADIUS:
+        # empujar la pelota en direccion del jugador
+        dx  =   ball.x  -   player.x
+        dy  =   ball.y  -   player.y
+        # 1
+        if  dx  ==  0   and dy  ==  0:
+            dx  =   random.uniform(-0.5,    0.5)
+            dy  =   random.uniform(-0.5,    0.5)
+        length  =   math.hypot(dx,  dy)
+        nx, ny  = dx    /   length, dy  /   length
+        # si el jugador esta chutiando y    cerca, aplicar > fuerza .
+        power   =   KICK_POWER if   kick_pressed    else    1.6
+        ball.vx =   nx  *   power   +   player.vx   *   0.6
+        ball.vy =   ny  *   power   +   player.vy   *   0.6
+             
