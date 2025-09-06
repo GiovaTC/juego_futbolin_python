@@ -1,4 +1,7 @@
 # juego_futbolin_python
+
+<img width="2554" height="1079" alt="image" src="https://github.com/user-attachments/assets/5e3a3c01-a410-45c0-a8de-2d04a5fbf6e7" />
+
 # ⚽ Juego de Fútbol en Python con Pygame
 
 Este es un juego sencillo de fútbol hecho en **Python** usando la librería **Pygame**.  
