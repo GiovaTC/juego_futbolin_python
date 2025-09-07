@@ -1,6 +1,6 @@
 # juego_futbolin_python
 
-<img width="2554" height="1079" alt="image" src="https://github.com/user-attachments/assets/5e3a3c01-a410-45c0-a8de-2d04a5fbf6e7" />
+<img width="2557" height="1079" alt="image" src="https://github.com/user-attachments/assets/577b59e0-1d8d-48fa-a7dc-31e4593070ab" />
 
 # ⚽ Juego de Fútbol en Python con Pygame
 
